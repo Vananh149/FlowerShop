@@ -72,10 +72,13 @@ export default function OrdersPage() {
         // Mock fetch
         setIsLoading(true);
         setTimeout(() => {
+            const savedOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+            const allOrders = [...savedOrders, ...MOCK_ORDERS];
+            
             if (activeFilter === 'Tất cả') {
-                setOrders(MOCK_ORDERS);
+                setOrders(allOrders);
             } else {
-                setOrders(MOCK_ORDERS.filter(o => o.status === activeFilter));
+                setOrders(allOrders.filter(o => o.status === activeFilter));
             }
             setIsLoading(false);
         }, 500);

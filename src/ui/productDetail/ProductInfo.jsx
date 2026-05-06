@@ -4,6 +4,7 @@ import { ShoppingCart, Gift, Leaf, Clock } from 'lucide-react';
 export default function ProductInfo({ product, onAddToCart }) {
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState('Tiêu chuẩn');
+    const [isGift, setIsGift] = useState(false);
 
     const sizes = ['Tiêu chuẩn', 'Lớn', 'Đặc biệt'];
 
@@ -65,12 +66,18 @@ export default function ProductInfo({ product, onAddToCart }) {
                     Thêm vào giỏ hàng
                 </button>
                 
-                <button 
-                    className="mt-3 w-full border border-gray-200 bg-white py-3 rounded-full hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-gray-700 font-medium text-sm"
-                >
-                    <Gift className="w-4 h-4" />
-                    Gửi như một món quà
-                </button>
+                <label className="mt-4 flex items-center gap-3 cursor-pointer group">
+                    <input 
+                        type="checkbox" 
+                        checked={isGift}
+                        onChange={(e) => setIsGift(e.target.checked)}
+                        className="w-5 h-5 rounded border-gray-300 text-[#FFB6C1] focus:ring-[#FFB6C1] focus:ring-offset-0 accent-[#FFB6C1] cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2 text-sm text-gray-700 font-medium group-hover:text-gray-900 transition-colors">
+                        <Gift className={`w-4 h-4 ${isGift ? 'text-[#FFB6C1]' : 'text-gray-400'}`} />
+                        Gửi như một món quà
+                    </div>
+                </label>
             </div>
 
             {/* Dịch vụ */}

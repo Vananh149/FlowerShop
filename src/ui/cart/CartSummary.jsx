@@ -26,10 +26,6 @@ export default function CartSummary({ cartTotal, cartCount }) {
                         <span>Tạm tính ({cartCount} sản phẩm)</span>
                         <span>{formatPrice(cartTotal)}</span>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-500">
-                        <span>Phí giao hàng</span>
-                        <span>{shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)}</span>
-                    </div>
                 </div>
 
                 <div className="border-t border-gray-100 my-4 pt-4">
@@ -37,7 +33,6 @@ export default function CartSummary({ cartTotal, cartCount }) {
                         <span className="text-sm font-medium text-gray-800">Tổng cộng</span>
                         <span className="text-lg font-bold text-gray-800">{formatPrice(cartTotal + shippingFee)}</span>
                     </div>
-                    <p className="text-[10px] text-gray-400 text-right mt-1">(Đã bao gồm VAT nếu có)</p>
                 </div>
 
                 <button 

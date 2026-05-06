@@ -36,13 +36,21 @@ export default function CheckoutPage() {
             const date = new Date().toISOString();
             
             const orderData = {
-                orderId,
-                date,
-                cart: [...cart],
+                id: orderId, // use 'id' instead of 'orderId' to match MOCK_ORDERS format
+                date: new Date().toLocaleString('vi-VN'), // format date nicely
+                items: [...cart], // MOCK_ORDERS uses 'items' instead of 'cart'
                 formData,
-                paymentMethod,
-                finalTotal
+                name: formData.fullName, // match MOCK_ORDERS
+                address: formData.address,
+                phone: formData.phone,
+                paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Thẻ tín dụng', // human readable
+                total: finalTotal, // MOCK_ORDERS uses 'total'
+                status: 'Đang xử lý' // default status
             };
+
+            // Save to localStorage
+            const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+            localStorage.setItem('myOrders', JSON.stringify([orderData, ...existingOrders]));
 
             clearCart();
             // Redirect sau 2 giây

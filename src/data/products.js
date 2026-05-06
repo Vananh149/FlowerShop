@@ -76,7 +76,7 @@ export const products = [
     {
         id: '8',
         name: "Love Story",
-        price: 2.950000,
+        price: 2950000,
         priceFormatted: "2.950.000 VND",
         image: "https://product.hstatic.net/200000501225/product/bo_hoa_mau_don_nhap_khau_luxury__5427bd6b54f14541aa426fd94d508936_1024x1024.jpg",
         category: "Mẫu bán chạy 2026",
@@ -90,7 +90,7 @@ export const products = [
         price: 520000,
         priceFormatted: "520.000 VND",
         image: "https://flowersight.com/wp-content/uploads/2024/09/hoa-cuoi-baby-xanh-1.jpg",
-        category: "Mẫu bán chạy 2026",
+        category: "Bộ sưu tập đám cưới",
         type: "Hoa baby",
         description: "Mang hơi thở mùa xuân tươi mới."
     },
@@ -101,7 +101,7 @@ export const products = [
         oldPrice: 1000000,
         priceFormatted: "890.000 VND",
         image: "https://dienhoathudo.com/wp-content/uploads/2022/01/MH037.jpg",
-        category: "Mẫu bán chạy 2026",
+        category: "Bộ sưu tập đám cưới",
         type: "Hoa hồng",
         tag: "GIẢM GIÁ",
         description: "Mát lạnh như tiếng thì thầm của đại dương."
@@ -249,7 +249,7 @@ export const products = [
         price: 1350000,
         priceFormatted: "1.350.000 VND",
         image: "https://tiemhoaori.com/wp-content/uploads/bo-hoa-blue-rose-ori.jpg",
-        category: "Mẫu bán chạy 2026",
+        category: "Bộ sưu tập đám cưới",
         type: "Hoa hồng",
         description: "Vẻ đẹp kiêu kỳ và lộng lẫy của công chúa."
     },
