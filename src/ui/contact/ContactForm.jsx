@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function ContactForm() {
     const [formData, setFormData] = useState({
@@ -16,7 +17,15 @@ export default function ContactForm() {
         e.preventDefault();
         // Giả lập gửi form
         console.log('Form submitted:', formData);
-        alert('Cảm ơn bạn đã liên hệ! Floré sẽ phản hồi trong thời gian sớm nhất.');
+        toast.success('Cảm ơn bạn đã liên hệ! Floré sẽ phản hồi trong thời gian sớm nhất.', {
+            duration: 4000,
+            position: 'top-center',
+            style: {
+                background: '#4CAF50',
+                color: '#fff',
+                borderRadius: '10px',
+            },
+        });
         setFormData({ name: '', email: '', subject: '', message: '' });
     };
 

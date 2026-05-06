@@ -19,7 +19,7 @@ export default function Home() {
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbsM9QwvN3BAz7MV73fzif4_ss_1z4jhlh_L0KkERmQx7IV22uaq1U51ldACdAa72BzJe_kvCkTWoVnMFHRj9_hF0vD27Exmggxy2CVMZfSUYtqYn0_phPnEd4zzRyrvYGqAw6OtUQ7zZNkSz8c09hs_MqakoSBG7QStCx8ojFxms79-9_AV2Vq45qvPA5bC5Pp2Tb2xkQhmpeqnquRlpWf_ZXNJpuYvH1hWZKKXXPsEo3aI8_SnMFJYoyLdXU6u4tTIcqbO5t6QM" 
                     />
                 </div>
-                <div className="relative z-10 max-w-7xl mx-auto px-4 h-full flex items-center">
+                <div className="relative z-10 w-full px-6 md:px-10 lg:px-16 h-full flex items-center">
                     <div className="max-w-xl">
                         <p className="uppercase tracking-[0.2em] text-xs font-semibold text-flore-accent mb-4 transition-all duration-500 hover:tracking-[0.25em]">
                             Artisan Florist Vietnam
@@ -40,7 +40,7 @@ export default function Home() {
             <PromoMarquee />
 
             <section className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-4">
+                <div className="w-full px-6 md:px-10 lg:px-16">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-serif text-gray-800 mb-4 transition-colors hover:text-flore-accent">
                             Sản phẩm bán chạy

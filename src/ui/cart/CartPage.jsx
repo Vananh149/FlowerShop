@@ -10,7 +10,7 @@ export default function CartPage() {
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen py-10">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="w-full px-6 md:px-10 lg:px-16">
                 
                 <h1 className="text-3xl font-serif text-gray-800 mb-8">Giỏ hàng của bạn</h1>
 

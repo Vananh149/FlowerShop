@@ -64,5 +64,38 @@ export const reviews = [
         content: "Một tiệm hoa chân ái mới tìm được. Giá có nhỉnh hơn chút xíu nhưng chất lượng hoa và cách cắm hoàn toàn xứng đáng với số tiền bỏ ra.",
         image: "https://hoatuoi360.vn/uploads/file/hoatuoi360%20%20-%20bo%20hoa%20xinh%207002.jpg",
         hasImage: true
+    },
+    {
+        id: 7,
+        name: "Nguyễn Minh Tuấn",
+        avatarLetter: "T",
+        avatarBg: "bg-teal-100",
+        date: "10 Tháng 2, 2026",
+        rating: 5,
+        content: "Mình đặt hoa kỷ niệm ngày cưới và vợ mình rất bất ngờ vì hoa quá đẹp. Sẽ tiếp tục mua hoa tại Floré vào những dịp sắp tới.",
+        image: "https://lamour.vn/wp-content/uploads/2025/09/1-6.jpg",
+        hasImage: true
+    },
+    {
+        id: 8,
+        name: "Hoàng Ngọc Anh",
+        avatarLetter: "A",
+        avatarBg: "bg-indigo-100",
+        date: "05 Tháng 2, 2026",
+        rating: 4,
+        content: "Hoa thơm và giữ được khá lâu, tuy nhiên thiệp đính kèm có phông chữ hơi nhỏ một chút. Tổng thể vẫn rất hài lòng.",
+        image: "https://uploads-ssl.webflow.com/5f170d82c5ecc29e51e2a7dc/667a3db79a0b9ad54a14e456_Thie%CC%82%CC%81t%20ke%CC%82%CC%81%20chu%CC%9Ba%20co%CC%81%20te%CC%82n%20(9).jpg",
+        hasImage: true
+    },
+    {
+        id: 9,
+        name: "Đinh Phương Thảo",
+        avatarLetter: "T",
+        avatarBg: "bg-red-100",
+        date: "28 Tháng 1, 2026",
+        rating: 5,
+        content: "Giao hàng rất nhanh. Đóng gói cẩn thận. Cách phối màu của bó hoa thực sự tinh tế. Mình rất ưng ý với sự kết hợp này, hoa nở rộ rất đẹp.",
+        image: "https://bizweb.dktcdn.net/thumb/1024x1024/100/487/411/products/0fad9fff-7b13-4865-80b8-80d7ceddea8f-bef3fdb5-6932-45e2-b73e-cb604d0c4371.jpg?v=1760432521323",
+        hasImage: true
     }
 ];

@@ -7,6 +7,12 @@ import { reviews as initialReviews } from '../../data/reviews';
 
 export default function Reviews() {
     const [activeTab, setActiveTab] = useState('all');
+    const [visibleCount, setVisibleCount] = useState(6);
+
+    const handleTabChange = (tabId) => {
+        setActiveTab(tabId);
+        setVisibleCount(6);
+    };
 
     const tabs = [
         { id: 'all', label: 'Tất cả' },
@@ -31,7 +37,7 @@ export default function Reviews() {
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen pt-12 md:pt-20 pb-10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full px-6 md:px-10 lg:px-16 sm:px-6 lg:px-8">
                 
                 {/* Summary Section */}
                 <div className="text-center py-12 md:py-16">
@@ -68,14 +74,14 @@ export default function Reviews() {
                     <FilterTabs 
                         tabs={tabs} 
                         activeTab={activeTab} 
-                        onTabChange={setActiveTab} 
+                        onTabChange={handleTabChange} 
                     />
                 </div>
 
                 {/* Review Grid */}
                 {filteredReviews.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 animate-[fadeIn_0.9s_ease-out]">
-                        {filteredReviews.map((review) => (
+                        {filteredReviews.slice(0, visibleCount).map((review) => (
                             <ReviewCard key={review.id} review={review} />
                         ))}
                     </div>
@@ -83,7 +89,7 @@ export default function Reviews() {
                     <div className="text-center py-20 bg-white rounded-2xl border border-[#F1F1F1] shadow-sm animate-[fadeIn_0.9s_ease-out]">
                         <p className="text-[#777777]">Không tìm thấy đánh giá nào phù hợp.</p>
                         <button 
-                            onClick={() => setActiveTab('all')}
+                            onClick={() => handleTabChange('all')}
                             className="mt-4 px-6 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200 transition-colors"
                         >
                             Xem tất cả đánh giá
@@ -94,7 +100,10 @@ export default function Reviews() {
                 {/* Load More Button */}
                 {filteredReviews.length > 0 && (
                     <div className="flex justify-center mt-12 mb-20">
-                        <button className="px-8 py-2.5 rounded-full border border-[#F1F1F1] bg-white text-[#777777] font-medium hover:bg-gray-50 hover:text-[#333333] transition-colors shadow-sm">
+                        <button 
+                            onClick={() => setVisibleCount(prev => prev + 6)}
+                            className="px-8 py-2.5 rounded-full border border-[#F1F1F1] bg-white text-[#777777] font-medium hover:bg-gray-50 hover:text-[#333333] transition-colors shadow-sm"
+                        >
                             Xem thêm đánh giá
                         </button>
                     </div>

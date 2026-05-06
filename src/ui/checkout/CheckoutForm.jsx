@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Truck, CreditCard, Banknote } from 'lucide-react';
+import { Truck, CreditCard, Banknote, QrCode } from 'lucide-react';
 
 export default function CheckoutForm({ 
     shippingMethod, setShippingMethod, 
     paymentMethod, setPaymentMethod, 
-    onSubmit 
+    onSubmit, finalTotal
 }) {
     const [formData, setFormData] = useState({
         fullName: '',
@@ -144,12 +144,53 @@ export default function CheckoutForm({
                         <Banknote className={`w-5 h-5 ${paymentMethod === 'cod' ? 'text-[#FFB6C1]' : 'text-gray-400'}`} />
                         <span className="text-sm text-gray-800">Thanh toán khi nhận hàng (COD)</span>
                     </div>
-                    <div 
-                        onClick={() => setPaymentMethod('card')}
-                        className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-[#FFB6C1] bg-pink-50' : 'border-gray-200 hover:border-pink-200'}`}
-                    >
-                        <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#FFB6C1]' : 'text-gray-400'}`} />
-                        <span className="text-sm text-gray-800">Thẻ tín dụng / Ghi nợ</span>
+                    <div className="flex flex-col border rounded-xl overflow-hidden transition-all border-gray-200">
+                        <div 
+                            onClick={() => setPaymentMethod('card')}
+                            className={`flex items-center gap-3 p-4 cursor-pointer transition-all ${paymentMethod === 'card' ? 'bg-pink-50 border-b border-pink-100' : 'hover:bg-gray-50'}`}
+                        >
+                            <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#FFB6C1]' : 'text-gray-400'}`} />
+                            <span className={`text-sm ${paymentMethod === 'card' ? 'text-gray-900 font-medium' : 'text-gray-800'}`}>Thẻ tín dụng / Ghi nợ / Chuyển khoản</span>
+                        </div>
+                        {paymentMethod === 'card' && (
+                            <div className="p-6 bg-white animate-in slide-in-from-top-2 fade-in duration-200">
+                                <div className="flex flex-col items-center border border-gray-100 rounded-xl p-6 bg-gray-50">
+                                    <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 mb-4 flex items-center justify-center">
+                                        <img 
+                                            src={`https://img.vietqr.io/image/970436-0123456789-compact2.png?amount=${finalTotal}&addInfo=${encodeURIComponent('Thanh toan don hang ' + formData.phone)}&accountName=CUA%20HANG%20FLORE`} 
+                                            alt="QR Code Thanh Toán" 
+                                            className="w-48 h-48 object-contain"
+                                        />
+                                    </div>
+                                    <h3 className="font-semibold text-gray-800 mb-2">Ngân hàng Vietcombank</h3>
+                                    <div className="text-sm text-gray-600 space-y-2 w-full max-w-xs">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Chủ tài khoản:</span>
+                                            <span className="font-medium text-gray-800">CỬA HÀNG FLORÉ</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Số tài khoản:</span>
+                                            <span className="font-medium text-gray-800">0123456789</span>
+                                        </div>
+                                        <div className="flex justify-between items-center pt-2 border-t border-gray-200 mt-2">
+                                            <span className="text-gray-500">Số tiền:</span>
+                                            <span className="font-bold text-[#FFB6C1] text-lg">
+                                                {finalTotal?.toLocaleString('vi-VN')}đ
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-start pt-2">
+                                            <span className="text-gray-500">Nội dung:</span>
+                                            <span className="font-medium text-gray-800 text-right w-2/3 break-words">
+                                                Thanh toan don hang {formData.phone || '...'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-gray-400 mt-6 text-center">
+                                        Quét mã QR bằng ứng dụng ngân hàng hoặc ví điện tử để thanh toán
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

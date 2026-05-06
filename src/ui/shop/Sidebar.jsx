@@ -4,7 +4,6 @@ import FilterSection from './FilterSection';
 export default function Sidebar({ filters, setFilters }) {
   const collections = ['Tất cả các loài hoa', 'Mẫu bán chạy 2026', 'Bộ sưu tập đám cưới'];
   const flowerTypes = ['Hoa hồng', 'Hoa mẫu đơn', 'Hoa baby', 'Hoa tulip', 'Hoa hướng dương'];
-  const colors = ['#FCA5A5', '#FCD34D', '#6EE7B7', '#93C5FD', '#C4B5FD', '#FBCFE8', '#FFFFFF', '#000000'];
 
   // Handle Collection toggle
   const handleCollectionClick = (col) => {
@@ -87,22 +86,6 @@ export default function Sidebar({ filters, setFilters }) {
             <span>0 VND</span>
             <span>{filters.maxPrice.toLocaleString('vi-VN')} VND</span>
           </div>
-        </div>
-      </FilterSection>
-
-      {/* Colors */}
-      <FilterSection title="Bảng màu">
-        <div className="flex flex-wrap gap-2">
-          {colors.map(color => (
-            <button
-              key={color}
-              onClick={() => setFilters(prev => ({ ...prev, color }))}
-              style={{ backgroundColor: color }}
-              className={`w-6 h-6 rounded-full border transition-transform ${filters.color === color ? 'scale-125 ring-2 ring-offset-1 ring-flore-accent border-transparent' : 'border-gray-200 hover:scale-110'
-                }`}
-              aria-label={`Color ${color}`}
-            />
-          ))}
         </div>
       </FilterSection>
     </aside>

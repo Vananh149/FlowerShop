@@ -24,7 +24,7 @@ export default function OrderSuccess() {
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen py-16 px-4">
-            <div className="max-w-7xl mx-auto flex flex-col items-center">
+            <div className="w-full px-6 md:px-10 lg:px-16 flex flex-col items-center">
                 <SuccessMessage isLoading={isLoading} />
                 
                 {isLoading ? (

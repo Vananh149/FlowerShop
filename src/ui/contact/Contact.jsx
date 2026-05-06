@@ -4,6 +4,7 @@ import ContactInfoCard from './ContactInfoCard';
 import ContactForm from './ContactForm';
 import MapSection from './MapSection';
 import Newsletter from '../home/Newsletter';
+import toast from 'react-hot-toast';
 
 export default function Contact() {
     return (
@@ -24,13 +25,28 @@ export default function Contact() {
                     </p>
 
                     {/* Quick Input Bar */}
-                    <form className="max-w-lg mx-auto flex items-center bg-white rounded-full shadow-sm border border-gray-100 p-1.5 focus-within:ring-2 focus-within:ring-pink-200 transition-all" onSubmit={(e) => e.preventDefault()}>
+                    <form 
+                        className="max-w-lg mx-auto flex items-center bg-white rounded-full shadow-sm border border-gray-100 p-1.5 focus-within:ring-2 focus-within:ring-pink-200 transition-all" 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            const inputVal = e.target.elements[0].value;
+                            if (inputVal.trim()) {
+                                toast.success('Cảm ơn bạn đã liên hệ! Floré sẽ phản hồi trong thời gian sớm nhất.', {
+                                    duration: 4000,
+                                    position: 'top-center',
+                                    style: { background: '#4CAF50', color: '#fff', borderRadius: '10px' }
+                                });
+                                e.target.reset();
+                            }
+                        }}
+                    >
                         <input 
                             type="text" 
                             placeholder="Nhập email hoặc câu hỏi ngắn..." 
+                            required
                             className="flex-1 bg-transparent px-5 py-3 text-sm text-[#333333] placeholder-gray-400 focus:outline-none"
                         />
-                        <button className="bg-[#FFB6C1] hover:bg-[#734A4A] text-white px-6 py-3 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                        <button type="submit" className="bg-[#FFB6C1] hover:bg-[#734A4A] text-white px-6 py-3 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
                             <span>GỬI</span>
                             <Send className="w-4 h-4" />
                         </button>
@@ -39,7 +55,7 @@ export default function Contact() {
             </div>
 
             {/* Main Content Container */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+            <div className="w-full px-6 md:px-10 lg:px-16 sm:px-6 lg:px-8 -mt-10 relative z-20">
                 
                 {/* Contact Section: Info + Form */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 animate-[fadeInUp_1s_ease-out]">

@@ -19,6 +19,8 @@ import OrderDetail from "./ui/orders/OrderDetail";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
+import WriteReviewPage from "./ui/reviews/WriteReviewPage";
+import { Toaster } from "react-hot-toast";
 
 // Component bảo vệ route (nếu chưa đăng nhập thì đẩy ra trang login)
 const ProtectedRoute = ({ children }) => {
@@ -34,6 +36,7 @@ function App() {
       <CartProvider>
         <WishlistProvider>
           <BrowserRouter>
+          <Toaster />
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -45,6 +48,14 @@ function App() {
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
               <Route path="reviews" element={<Reviews />} />
+              <Route 
+                path="write-review" 
+                element={
+                  <ProtectedRoute>
+                    <WriteReviewPage />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="profile" 
                 element={

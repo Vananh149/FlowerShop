@@ -23,7 +23,7 @@ export default function WishlistPage() {
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen py-10">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="w-full px-6 md:px-10 lg:px-16">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar */}
                     <div className="lg:col-span-1">

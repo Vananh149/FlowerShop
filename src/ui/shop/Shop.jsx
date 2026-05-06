@@ -17,6 +17,11 @@ export default function Shop() {
     const [sortOption, setSortOption] = useState('popular');
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Reset page to 1 when filters change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filters]);
+
     // Config for 4x4 grid (12 sản phẩm = 4 cột x 3 dòng)
     const itemsPerPage = 12;
 
@@ -27,7 +32,11 @@ export default function Shop() {
             if (filters.collection !== 'Tất cả các loài hoa' && p.category !== filters.collection) return false;
 
             // Types Filter
-            if (filters.types.length > 0 && !filters.types.includes(p.type)) return false;
+            if (filters.types.length > 0) {
+                const pType = (p.type || '').toLowerCase().trim();
+                const hasMatch = filters.types.some(t => t.toLowerCase().trim() === pType);
+                if (!hasMatch) return false;
+            }
 
             // Price Filter
             if (p.price > filters.maxPrice) return false;
@@ -66,7 +75,7 @@ export default function Shop() {
 
     return (
         <div className="bg-gray-50/50 min-h-screen py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="w-full px-6 md:px-10 lg:px-16 sm:px-6">
                 {/* Header Title */}
                 <div className="text-center mb-16">
                     <h1 className="text-4xl font-serif mb-4 text-gray-800">Cửa hàng</h1>

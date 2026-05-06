@@ -20,7 +20,7 @@ export default function About() {
                     <div className="absolute inset-0 bg-black/10"></div>
                 </div>
                 
-                <div className="container mx-auto px-4 md:px-8 xl:px-0 relative z-10">
+                <div className="w-full px-6 md:px-10 lg:px-16 relative z-10">
                     <div className="bg-white/95 backdrop-blur-md p-8 md:p-12 lg:p-16 rounded-2xl max-w-xl shadow-2xl animate-[fadeIn_0.8s_ease-out]">
                         <p className="text-xs font-bold tracking-[0.2em] uppercase text-flore-gray mb-4">
                             Về với Floré, về với thiên nhiên
@@ -36,7 +36,7 @@ export default function About() {
             </div>
 
             {/* Mission Section */}
-            <div className="py-24 md:py-32 container mx-auto px-4 md:px-8 xl:px-0">
+            <div className="py-24 md:py-32 w-full px-6 md:px-10 lg:px-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
                     <div className="relative group animate-[fadeIn_1s_ease-out]">
                         <div className="aspect-[4/5] overflow-hidden rounded-3xl shadow-lg">
@@ -75,7 +75,7 @@ export default function About() {
 
             {/* Timeline Section */}
             <div className="bg-flore-bg py-24 md:py-32 relative overflow-hidden">
-                <div className="container mx-auto px-4 md:px-8 xl:px-0 relative z-10">
+                <div className="w-full px-6 md:px-10 lg:px-16 relative z-10">
                     <SectionTitle 
                         subtitle="Nhìn lại quá khứ" 
                         title="Hành trình phát triển" 
@@ -100,7 +100,7 @@ export default function About() {
             </div>
 
             {/* Team Section */}
-            <div className="py-24 md:py-32 container mx-auto px-4 md:px-8 xl:px-0">
+            <div className="py-24 md:py-32 w-full px-6 md:px-10 lg:px-16">
                 <SectionTitle 
                     subtitle="Những bàn tay tài hoa" 
                     title="Đội ngũ nghệ nhân" 

@@ -1,4 +1,4 @@
-export const products = [
+module.exports.products = [
     {
         id: '1',
         name: "Ethereal Blush",
@@ -111,7 +111,7 @@ export const products = [
         name: "Golden Hour",
         price: 450000,
         priceFormatted: "450.000 VND",
-        image: "https://peliflowers.com/wp-content/uploads/2024/09/Bo-hoa-mat-troi-BH29-480k.jpg",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-KvGXbgJhw1CKt-szKZg1NXMlXrDVhCVTGgSFn8I8emGxk99pb6wtOCbEzQ0-NCfUeaaJxmCWom1hEi7_8MtOJqwHcgDI8t87sYiua1cbYL5o4muDw7KFbWneh36jxatlr4Y_A9j6VX6rkwJTbxOl0NvMyX5oGqdD5hg4yx8ZFFaPscuu6psdsrIm-LTc0Mv5j2daZMFhXs317trynVJO33o6ONXQqjKTwqtJm6wQGRO9CTEdpPy8kMr85BNXAa6UZvTMMmZgMgI",
         category: "Mẫu bán chạy 2026",
         type: "Hoa hướng dương",
         tag: "MỚI",
@@ -175,7 +175,7 @@ export const products = [
         priceFormatted: "750.000 VND",
         image: "https://flowercorner.b-cdn.net/image/cache/catalog/products/B%C3%B3%20Hoa/bo-hoa-cuoi-sao-xanh.jpg.webp",
         category: "Bộ sưu tập đám cưới",
-        type: "Hoa baby",
+        type: "Hoa hồng",
         description: "Sự thanh lịch tuyệt đối với những đóa hoa trắng và kem tinh khôi, hoàn hảo cho ngày cưới."
     },
     {
@@ -196,7 +196,7 @@ export const products = [
         priceFormatted: "550.000 VND",
         image: "https://sunshineblossom.com.vn/wp-content/uploads/2021/11/ht.jpg",
         category: "Mẫu bán chạy 2026",
-        type: "Hoa baby",
+        type: "Hoa hồng",
         description: "Rực rỡ như ánh mặt trời, đóa hướng dương đem đến nguồn năng lượng tích cực."
     },
     {
@@ -239,7 +239,7 @@ export const products = [
         priceFormatted: "950.000 VND",
         image: "https://shophoatuoi.saigonhoa.com/wp-content/uploads/2024/07/bo-hoa-hong-sieu-to.jpg",
         category: "Mẫu bán chạy 2026",
-        type: "Hoa hồng",
+        type: "Hoa hướng dương",
         tag: "MỚI",
         description: "Tỏa sáng trong nắng chiều lãng mạn."
     },

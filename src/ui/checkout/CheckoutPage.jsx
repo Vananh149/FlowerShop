@@ -58,7 +58,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen py-10">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="w-full px-6 md:px-10 lg:px-16">
                 <h1 className="text-3xl font-serif text-gray-800 mb-8">Thanh toán</h1>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -70,6 +70,7 @@ export default function CheckoutPage() {
                             paymentMethod={paymentMethod}
                             setPaymentMethod={setPaymentMethod}
                             onSubmit={handlePlaceOrder}
+                            finalTotal={finalTotal}
                         />
                     </div>
 
