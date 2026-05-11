@@ -3,16 +3,19 @@ import { Copy, CheckCircle } from 'lucide-react';
 
 export default function OrderSummary({ orderData }) {
     const [copied, setCopied] = useState(false);
-    const { orderId, date, cart, formData, paymentMethod, finalTotal } = orderData;
+    const { id, date, items, formData, paymentMethod, total } = orderData;
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(orderId);
+        navigator.clipboard.writeText(id);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
     const formatDate = (dateString) => {
+        // If it's already nicely formatted by toLocaleString, we can just return it.
+        // But to be safe if it's an ISO string:
         const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString; // fallback if already formatted
         return d.toLocaleDateString('vi-VN', {
             year: 'numeric',
             month: 'long',
@@ -29,7 +32,7 @@ export default function OrderSummary({ orderData }) {
                 <div>
                     <p className="text-xs text-gray-400 mb-1">MÃ ĐƠN HÀNG</p>
                     <div className="flex items-center space-x-2">
-                        <span className="text-[#F472B6] font-bold">{orderId}</span>
+                        <span className="text-[#F472B6] font-bold">{id}</span>
                         <button 
                             onClick={handleCopy}
                             className="text-gray-400 hover:text-[#F472B6] transition-colors"
@@ -47,7 +50,7 @@ export default function OrderSummary({ orderData }) {
 
             {/* Product List */}
             <div className="mb-6">
-                {cart.map((item, index) => (
+                {items?.map((item, index) => (
                     <div key={index} className="flex items-center justify-between py-3 border-b border-[#F1F1F1] last:border-0">
                         <div className="flex items-center space-x-4">
                             <img 
@@ -71,18 +74,18 @@ export default function OrderSummary({ orderData }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#F1F1F1]">
                 <div>
                     <h4 className="text-xs text-gray-400 mb-2">THÔNG TIN GIAO HÀNG</h4>
-                    <p className="text-sm text-gray-800 font-medium">{formData.fullName}</p>
-                    <p className="text-sm text-gray-600 mt-1">{formData.phone}</p>
-                    <p className="text-sm text-gray-600 mt-1">{formData.address}</p>
-                    {formData.note && (
+                    <p className="text-sm text-gray-800 font-medium">{formData?.fullName}</p>
+                    <p className="text-sm text-gray-600 mt-1">{formData?.phone}</p>
+                    <p className="text-sm text-gray-600 mt-1">{formData?.address}</p>
+                    {formData?.note && (
                         <p className="text-xs text-gray-500 mt-2 italic">Ghi chú: {formData.note}</p>
                     )}
                 </div>
                 <div>
                     <h4 className="text-xs text-gray-400 mb-2">PHƯƠNG THỨC THANH TOÁN</h4>
                     <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-800 flex justify-between items-center">
-                        <span>{paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản / Thẻ'}</span>
-                        <span className="font-semibold text-[#8C5D5D]">{finalTotal.toLocaleString()}đ</span>
+                        <span>{paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản / Thẻ'}</span>
+                        <span className="font-semibold text-[#8C5D5D]">{total?.toLocaleString()}đ</span>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
+    const { user } = useAuth();
+
     // Load from localStorage on init
     const [cart, setCart] = useState(() => {
         try {
@@ -20,7 +23,11 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('flore_cart', JSON.stringify(cart));
     }, [cart]);
 
+    // Clear cart if logged out (optional: clear local storage too if desired, but here we just hide it)
+    const activeCart = user ? cart : [];
+
     const addToCart = (product) => {
+        if (!user) return; // Prevent adding if not logged in
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id);
             if (existing) {
@@ -31,11 +38,12 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeFromCart = (productId) => {
+        if (!user) return;
         setCart(prev => prev.filter(item => item.id !== productId));
     };
 
     const updateQuantity = (productId, newQuantity) => {
-        if (newQuantity < 1) return;
+        if (!user || newQuantity < 1) return;
         setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item));
     };
 
@@ -43,11 +51,11 @@ export const CartProvider = ({ children }) => {
         setCart([]);
     };
 
-    const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const cartCount = activeCart.reduce((total, item) => total + item.quantity, 0);
+    const cartTotal = activeCart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartCount, cartTotal }}>
+        <CartContext.Provider value={{ cart: activeCart, addToCart, removeFromCart, updateQuantity, clearCart, cartCount, cartTotal }}>
             {children}
         </CartContext.Provider>
     );
