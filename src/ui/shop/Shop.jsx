@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import ProductCard from '../shared/ProductCard';
 import Pagination from '../shared/Pagination';
@@ -7,6 +8,9 @@ import { products as initialProducts } from '../../data/products';
 import { ChevronDown } from 'lucide-react';
 
 export default function Shop() {
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get('search') || '';
+
     const [filters, setFilters] = useState({
         collection: 'Tất cả các loài hoa',
         types: [],
@@ -17,10 +21,10 @@ export default function Shop() {
     const [sortOption, setSortOption] = useState('popular');
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Reset page to 1 when filters change
+    // Reset page to 1 when filters or search query change
     React.useEffect(() => {
         setCurrentPage(1);
-    }, [filters]);
+    }, [filters, searchQuery]);
 
     // Config for 4x4 grid (12 sản phẩm = 4 cột x 3 dòng)
     const itemsPerPage = 12;
@@ -28,6 +32,15 @@ export default function Shop() {
     // Filter Logic
     const filteredProducts = useMemo(() => {
         return initialProducts.filter(p => {
+            // Search Query Filter
+            if (searchQuery) {
+                const searchLower = searchQuery.toLowerCase().trim();
+                const matchName = p.name.toLowerCase().includes(searchLower);
+                const matchCategory = p.category?.toLowerCase().includes(searchLower);
+                const matchTag = p.tag?.toLowerCase().includes(searchLower);
+                if (!matchName && !matchCategory && !matchTag) return false;
+            }
+
             // Collection Filter
             if (filters.collection !== 'Tất cả các loài hoa' && p.category !== filters.collection) return false;
 
@@ -46,7 +59,7 @@ export default function Shop() {
 
             return true;
         });
-    }, [filters]);
+    }, [filters, searchQuery]);
 
     // Sort Logic
     const sortedProducts = useMemo(() => {
@@ -131,9 +144,12 @@ export default function Shop() {
                             </div>
                         ) : (
                             <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-                                <p className="text-gray-500 mb-4">Không tìm thấy sản phẩm nào phù hợp với bộ lọc.</p>
+                                <p className="text-gray-500 mb-4">Không tìm thấy sản phẩm nào phù hợp với bộ lọc hoặc tìm kiếm.</p>
                                 <button
-                                    onClick={() => setFilters({ collection: 'Tất cả các loài hoa', types: [], maxPrice: 3000000, color: null })}
+                                    onClick={() => {
+                                        setFilters({ collection: 'Tất cả các loài hoa', types: [], maxPrice: 3000000, color: null });
+                                        setSearchParams({});
+                                    }}
                                     className="px-6 py-2 bg-flore-accent text-white rounded-full hover:bg-opacity-90 transition-colors text-sm font-medium"
                                 >
                                     Xóa bộ lọc

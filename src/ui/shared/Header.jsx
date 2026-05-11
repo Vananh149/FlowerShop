@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Heart, ShoppingCart, User } from 'lucide-react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
@@ -11,6 +11,34 @@ export default function Header() {
     const { user } = useAuth();
     const { cartCount } = useCart();
     const { wishlist } = useWishlist();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
+
+    // Sync input with URL
+    useEffect(() => {
+        const urlSearch = searchParams.get('search') || '';
+        setSearch(urlSearch);
+    }, [searchParams]);
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            if (search.trim()) {
+                navigate(`/shop?search=${encodeURIComponent(search.trim())}`);
+            } else {
+                navigate('/shop');
+            }
+        }
+    };
+
+    const handleSearchChange = (e) => {
+        const val = e.target.value;
+        setSearch(val);
+        // Automatically return to all flowers if search is cleared while on the shop page
+        if (val.trim() === '' && location.pathname.includes('/shop')) {
+            navigate('/shop');
+        }
+    };
 
     const navItems = [
         { name: 'Trang chủ', path: '/' },
@@ -55,7 +83,8 @@ export default function Header() {
                         <input 
                             type="text"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleSearch}
                             placeholder="Tìm kiếm hoa..." 
                             className="bg-gray-50 rounded-full py-2 pl-10 pr-4 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FFB6C1] border border-transparent focus:border-[#FFB6C1] transition-all duration-300"
                         />
