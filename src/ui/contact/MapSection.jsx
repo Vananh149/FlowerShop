@@ -18,7 +18,7 @@ export default function MapSection() {
                 {/* Button Overlay */}
                 <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10">
                     <a 
-                        href="https://maps.google.com" 
+                        href="https://maps.app.goo.gl/8SBYVwWzpFd2UY549" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-white px-6 py-3.5 rounded-full shadow-lg text-[#333333] font-medium hover:bg-[#FFF5F5] hover:text-[#FFB6C1] transition-all duration-300 group/btn"
