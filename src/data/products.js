@@ -7,6 +7,7 @@ export const products = [
         image: "https://hoayeuthuong.com/hinh-hoa-chinh/hoa-chuc-mung/4041_doa-hoa-diu-dang.jpg",
         category: "Mẫu bán chạy 2026",
         type: "Hoa hồng",
+        occasion: "Sinh nhật",
         description: "Bó hoa hồng phấn nhẹ nhàng, biểu tượng của lời thề nguyện thầm lặng và tình yêu vĩnh cửu."
     },
     {
@@ -17,6 +18,7 @@ export const products = [
         image: "https://moonflowerhanoi.com/wp-content/uploads/2023/05/bo-hoa-tulip-mau-hong-loi-yeu.jpg",
         category: "Mẫu bán chạy 2026",
         type: "Hoa Tulip",
+        occasion: "Kỷ niệm",
         tag: "MỚI",
         description: "Giấc mơ ngọt ngào với tông màu pastel chủ đạo, mang lại cảm giác bình yên và lãng mạn."
     },
@@ -28,6 +30,7 @@ export const products = [
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDVHZZ_TJ5_IHC9xQg6x2y27rTQ45VWJyKoAEGwcOcUnsHW1GUpaJQUK1zLSiDq6bcunl9bQ1pk9-bHXZ2CAjE8Tf8eRJ04s0r8phdoRunkri8pjQNchBp1DBKQ0SRNoAcOACgt3bCeE4bY2tRogn8vjR4esgKNo9ijqrsXdjJvTXIbFX9RM1b6-7IbER_zS36iLOMdnYULj0sfu6VGk_xD-KgvQ6YuOCU_HMNiYh7Ku0GBQ_2oFvepaQKy4IIUv74In8hz6o2VS5M",
         category: "Mẫu bán chạy 2026",
         type: "Hoa mẫu đơn",
+        occasion: "Khai trương",
         description: "Lãng mạn như làn sương hoàng hôn, bó hoa thích hợp cho những dịp kỷ niệm quan trọng."
     },
     {
@@ -39,6 +42,7 @@ export const products = [
         image: "https://camflowershop.com/wp-content/uploads/2024/07/bo-hoa-chuc-mung-22.jpg",
         category: "Mẫu bán chạy 2026",
         type: "Hoa mẫu đơn",
+        occasion: "Valentine",
         tag: "GIẢM GIÁ",
         description: "Ngọt ngào và to lớn như chiếc kẹo bông gòn, mang đến niềm vui bất ngờ cho người nhận."
     },
@@ -50,6 +54,7 @@ export const products = [
         image: "https://i0.wp.com/tiemhoabonmua.com/wp-content/uploads/2021/06/tiemhoabonmua-bo-mau-don-hong-6-e1686217561435.jpg?fit=600%2C600&ssl=1",
         category: "Mẫu bán chạy 2026",
         type: "Hoa hồng",
+        occasion: "Kỷ niệm",
         description: "Sự thanh lịch tuyệt đối với những đóa hoa trắng và kem tinh khôi, hoàn hảo cho ngày cưới."
     },
     {

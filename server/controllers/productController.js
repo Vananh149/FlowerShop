@@ -33,3 +33,44 @@ export const getProductById = async (req, res) => {
         res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
     }
 };
+// @desc    Tạo sản phẩm mới
+// @route   POST /api/products
+export const createProduct = async (req, res) => {
+    try {
+        const product = new Product(req.body);
+        const savedProduct = await product.save();
+        res.status(201).json(savedProduct);
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi khi tạo sản phẩm", error: error.message });
+    }
+};
+
+// @desc    Cập nhật sản phẩm
+// @route   PUT /api/products/:id
+export const updateProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (product) {
+            res.json(product);
+        } else {
+            res.status(404).json({ message: "Không tìm thấy sản phẩm để cập nhật" });
+        }
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi khi cập nhật sản phẩm", error: error.message });
+    }
+};
+
+// @desc    Xóa sản phẩm
+// @route   DELETE /api/products/:id
+export const deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.id);
+        if (product) {
+            res.json({ message: "Đã xóa sản phẩm thành công" });
+        } else {
+            res.status(404).json({ message: "Không tìm thấy sản phẩm để xóa" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi xóa sản phẩm", error: error.message });
+    }
+};

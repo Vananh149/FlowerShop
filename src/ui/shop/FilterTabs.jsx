@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function FilterTabs({ tabs, activeTab, onTabChange }) {
     return (
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-3">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}

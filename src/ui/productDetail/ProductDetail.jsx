@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { products } from '../../data/products';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { ChevronRight, Home } from 'lucide-react';
+import { ChevronRight, Home, Loader2 } from 'lucide-react';
 import ProductImage from './ProductImage';
 import ProductInfo from './ProductInfo';
 import RelatedProducts from './RelatedProducts';
@@ -14,18 +13,49 @@ export default function ProductDetail() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { addToCart } = useCart();
+    const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [showToast, setShowToast] = useState(false);
 
-    // Tìm sản phẩm hiện tại
-    const product = products.find(p => p.id === id);
+    // Fetch sản phẩm từ MongoDB
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/products/${id}`);
+                const data = await response.json();
+                setProduct(data);
+            } catch (error) {
+                console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchProduct();
+    }, [id]);
 
-    // Lấy danh sách sản phẩm liên quan (cùng danh mục, loại trừ sản phẩm hiện tại)
-    const relatedProducts = useMemo(() => {
-        if (!product) return [];
-        return products
-            .filter(p => p.category === product.category && p.id !== product.id)
-            .slice(0, 4); // Lấy tối đa 4 sản phẩm
+    // Lấy danh sách sản phẩm liên quan
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    useEffect(() => {
+        if (product) {
+            fetch('http://localhost:5000/api/products')
+                .then(res => res.json())
+                .then(data => {
+                    const related = data
+                        .filter(p => p.category === product.category && p._id !== product._id)
+                        .slice(0, 4);
+                    setRelatedProducts(related);
+                });
+        }
     }, [product]);
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-10 h-10 animate-spin text-[#FFB6C1] mb-4" />
+                <p className="text-gray-500 font-serif">Đang tìm hoa cho bạn...</p>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -36,16 +66,15 @@ export default function ProductDetail() {
         );
     }
 
-    const handleAddToCart = (quantity, selectedSize) => {
+    const handleAddToCart = (quantity, selectedSize, selectedGifts) => {
         if (!user) {
             navigate('/login');
             return;
         }
         
-        // Thêm vào giỏ hàng (Gọi hàm addToCart nhiều lần tùy thuộc vào logic Context hiện tại, hoặc truyền số lượng nếu Context hỗ trợ)
-        // Hiện tại giả lập gọi addToCart theo quantity
+        // Thêm vào giỏ hàng kèm theo size và quà tặng
         for(let i = 0; i < quantity; i++) {
-            addToCart({ ...product, selectedSize });
+            addToCart({ ...product, selectedSize, selectedGifts });
         }
         
         setShowToast(true);

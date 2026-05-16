@@ -9,24 +9,43 @@ export default function ContactForm() {
         message: ''
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Giả lập gửi form
-        console.log('Form submitted:', formData);
-        toast.success('Cảm ơn bạn đã liên hệ! Floré sẽ phản hồi trong thời gian sớm nhất.', {
-            duration: 4000,
-            position: 'top-center',
-            style: {
-                background: '#4CAF50',
-                color: '#fff',
-                borderRadius: '10px',
-            },
-        });
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/contacts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                toast.success(data.message || 'Cảm ơn bạn đã liên hệ!', {
+                    duration: 4000,
+                    position: 'top-center',
+                    style: { background: '#4CAF50', color: '#fff', borderRadius: '10px' },
+                });
+                setFormData({ name: '', email: '', subject: '', message: '' });
+            } else {
+                toast.error(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+            }
+        } catch (error) {
+            toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại.');
+            console.error('Submit error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -84,9 +103,10 @@ export default function ContactForm() {
                 
                 <button 
                     type="submit"
-                    className="w-full bg-[#FFB6C1] text-white rounded-full py-4 font-medium tracking-wide shadow-md hover:bg-[#734A4A] transform hover:scale-[1.02] transition-all duration-300 mt-2"
+                    disabled={loading}
+                    className={`w-full bg-[#FFB6C1] text-white rounded-full py-4 font-medium tracking-wide shadow-md hover:bg-[#734A4A] transform hover:scale-[1.02] transition-all duration-300 mt-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                    GỬI TIN NHẮN
+                    {loading ? 'ĐANG GỬI...' : 'GỬI TIN NHẮN'}
                 </button>
             </form>
         </div>

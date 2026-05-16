@@ -1,88 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import OrderCard from './OrderCard';
 import { Package } from 'lucide-react';
-import { products } from '../../data/products'; // mock products to use in orders
-
-export const MOCK_ORDERS = [
-    {
-        id: '#FLR-9021',
-        status: 'Đang xử lý',
-        date: '03/05/2026 14:30',
-        total: 1250000,
-        paymentMethod: 'Chuyển khoản',
-        address: '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM',
-        phone: '0901234567',
-        name: 'Nguyễn Văn A',
-        items: [
-            { ...products[0], quantity: 1 },
-            { ...products[1], quantity: 1 }
-        ]
-    },
-    {
-        id: '#FLR-9020',
-        status: 'Đang giao',
-        date: '01/05/2026 09:15',
-        total: 450000,
-        paymentMethod: 'COD',
-        address: '456 Đường Trần Hưng Đạo, Phường 2, Quận 5, TP.HCM',
-        phone: '0901234567',
-        name: 'Nguyễn Văn A',
-        items: [
-            { ...products[2], quantity: 1 }
-        ]
-    },
-    {
-        id: '#FLR-9019',
-        status: 'Hoàn tất',
-        date: '25/04/2026 16:45',
-        total: 800000,
-        paymentMethod: 'Thẻ tín dụng',
-        address: '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM',
-        phone: '0901234567',
-        name: 'Nguyễn Văn A',
-        items: [
-            { ...products[3], quantity: 2 }
-        ]
-    },
-    {
-        id: '#FLR-9018',
-        status: 'Đã hủy',
-        date: '20/04/2026 10:20',
-        total: 550000,
-        paymentMethod: 'COD',
-        address: '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM',
-        phone: '0901234567',
-        name: 'Nguyễn Văn A',
-        items: [
-            { ...products[4], quantity: 1 }
-        ]
-    }
-];
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function OrdersPage() {
-    const [activeFilter, setActiveFilter] = useState('Tất cả');
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const filterParam = queryParams.get('filter');
+
+    const [activeFilter, setActiveFilter] = useState(filterParam || 'Tất cả');
+    const [toastMsg, setToastMsg] = useState('');
+    const filters = ['Tất cả', 'Chờ xác nhận', 'Chờ lấy hàng', 'Đang giao', 'Đã giao', 'Đã hủy'];
+
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [toastMsg, setToastMsg] = useState('');
-
-    const filters = ['Tất cả', 'Đang xử lý', 'Đang giao', 'Hoàn tất', 'Đã hủy'];
+    const [reviewedOrders, setReviewedOrders] = useState([]);
+    const { user } = useAuth();
 
     useEffect(() => {
-        // Mock fetch
-        setIsLoading(true);
-        setTimeout(() => {
-            const savedOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
-            const allOrders = [...savedOrders, ...MOCK_ORDERS];
-            
-            if (activeFilter === 'Tất cả') {
-                setOrders(allOrders);
-            } else {
-                setOrders(allOrders.filter(o => o.status === activeFilter));
+        if (filterParam) {
+            setActiveFilter(filterParam);
+        }
+    }, [filterParam]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                // 1. Fetch real orders from API
+                if (user) {
+                    const userId = user._id || user.id;
+                    const response = await fetch(`http://localhost:5000/api/orders/myorders/${userId}`);
+                    const data = await response.json();
+                    
+                    // Chuẩn hóa dữ liệu để phù hợp với OrderCard (ví dụ: totalAmount -> total)
+                    const normalizedOrders = data.map(order => ({
+                        ...order,
+                        id: order._id || order.id, // Sử dụng ID của MongoDB
+                        total: order.totalAmount, // Map lại trường cho đúng với giao diện cũ
+                        date: new Date(order.createdAt).toLocaleString('vi-VN')
+                    }));
+
+                    if (activeFilter === 'Tất cả') {
+                        setOrders(normalizedOrders);
+                    } else {
+                        setOrders(normalizedOrders.filter(o => o.status === activeFilter));
+                    }
+                }
+
+                // 2. Fetch reviewed order IDs from API
+                if (user) {
+                    const userId = user._id || user.id;
+                    const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+                    const reviewedIds = await response.json();
+                    setReviewedOrders(reviewedIds);
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu đơn hàng:", error);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
-        }, 500);
-    }, [activeFilter]);
+        };
+
+        fetchData();
+    }, [activeFilter, user]);
 
     const showToast = (msg) => {
         setToastMsg(msg);
@@ -140,7 +122,12 @@ export default function OrdersPage() {
                 ) : orders.length > 0 ? (
                     <div className="space-y-4">
                         {orders.map(order => (
-                            <OrderCard key={order.id} order={order} showToast={showToast} />
+                            <OrderCard 
+                                key={order.id} 
+                                order={order} 
+                                showToast={showToast} 
+                                isReviewed={reviewedOrders.includes(order.id)}
+                            />
                         ))}
                     </div>
                 ) : (

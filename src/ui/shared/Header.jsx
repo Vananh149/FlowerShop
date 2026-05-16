@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Heart, ShoppingCart, User } from 'lucide-react';
 import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
 import AvatarMenu from './AvatarMenu';
 
@@ -21,13 +21,17 @@ export default function Header() {
         setSearch(urlSearch);
     }, [searchParams]);
 
-    const handleSearch = (e) => {
+    const executeSearch = () => {
+        if (search.trim()) {
+            navigate(`/shop?search=${encodeURIComponent(search.trim())}`);
+        } else {
+            navigate('/shop');
+        }
+    };
+
+    const handleSearchKeyDown = (e) => {
         if (e.key === 'Enter') {
-            if (search.trim()) {
-                navigate(`/shop?search=${encodeURIComponent(search.trim())}`);
-            } else {
-                navigate('/shop');
-            }
+            executeSearch();
         }
     };
 
@@ -78,16 +82,29 @@ export default function Header() {
                 {/* Bên phải */}
                 <div className="flex items-center">
                     {/* Search box */}
-                    <div className="relative hidden lg:flex items-center">
-                        <Search className="w-4 h-4 absolute left-4 text-[#FFB6C1]" />
+                    <div className="relative hidden lg:flex items-center group">
+                        <button 
+                            onClick={executeSearch}
+                            className="absolute left-4 text-[#FFB6C1] hover:scale-110 transition-transform z-10"
+                        >
+                            <Search className="w-4 h-4" />
+                        </button>
                         <input 
                             type="text"
                             value={search}
                             onChange={handleSearchChange}
-                            onKeyDown={handleSearch}
+                            onKeyDown={handleSearchKeyDown}
                             placeholder="Tìm kiếm hoa..." 
-                            className="bg-gray-50 rounded-full py-2 pl-10 pr-4 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FFB6C1] border border-transparent focus:border-[#FFB6C1] transition-all duration-300"
+                            className="bg-gray-50 rounded-full py-2 pl-10 pr-10 text-sm w-56 focus:outline-none focus:ring-1 focus:ring-[#FFB6C1] border border-transparent focus:border-[#FFB6C1] transition-all duration-300 group-hover:w-64"
                         />
+                        {search && (
+                            <button 
+                                onClick={() => { setSearch(""); navigate('/shop'); }}
+                                className="absolute right-3 text-gray-300 hover:text-gray-500"
+                            >
+                                <span className="text-xs">✕</span>
+                            </button>
+                        )}
                     </div>
                     
                     {/* Icons */}

@@ -4,6 +4,7 @@ import FilterSection from './FilterSection';
 export default function Sidebar({ filters, setFilters }) {
   const collections = ['Tất cả các loài hoa', 'Mẫu bán chạy 2026', 'Bộ sưu tập đám cưới'];
   const flowerTypes = ['Hoa hồng', 'Hoa mẫu đơn', 'Hoa baby', 'Hoa tulip', 'Hoa hướng dương'];
+  const occasions = ['Sinh nhật', 'Khai trương', 'Kỷ niệm', 'Valentine', 'Chia buồn'];
 
   // Handle Collection toggle
   const handleCollectionClick = (col) => {
@@ -18,6 +19,18 @@ export default function Sidebar({ filters, setFilters }) {
         return { ...prev, types: prev.types.filter(t => t !== type) };
       } else {
         return { ...prev, types: [...prev.types, type] };
+      }
+    });
+  };
+
+  // Handle Occasion toggle
+  const handleOccasionChange = (occ) => {
+    setFilters(prev => {
+      const isSelected = (prev.occasions || []).includes(occ);
+      if (isSelected) {
+        return { ...prev, occasions: prev.occasions.filter(o => o !== occ) };
+      } else {
+        return { ...prev, occasions: [...(prev.occasions || []), occ] };
       }
     });
   };
@@ -64,6 +77,32 @@ export default function Sidebar({ filters, setFilters }) {
               </div>
               <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                 {type}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterSection>
+
+      {/* Occasions */}
+      <FilterSection title="Dịp lễ">
+        <div className="space-y-3">
+          {occasions.map(occ => (
+            <label key={occ} className="flex items-center space-x-3 cursor-pointer group">
+              <div className="relative flex items-center justify-center w-4 h-4 border rounded border-gray-300 group-hover:border-flore-accent">
+                <input
+                  type="checkbox"
+                  className="peer sr-only"
+                  checked={(filters.occasions || []).includes(occ)}
+                  onChange={() => handleOccasionChange(occ)}
+                />
+                <div className="absolute inset-0 bg-flore-accent scale-0 peer-checked:scale-100 transition-transform rounded flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
+                {occ}
               </span>
             </label>
           ))}

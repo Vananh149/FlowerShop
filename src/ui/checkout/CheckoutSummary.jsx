@@ -6,28 +6,49 @@ export default function CheckoutSummary({ cart, cartTotal, shippingFee, finalTot
         return price.toLocaleString('vi-VN') + ' VND';
     };
 
+    const calculateItemPrice = (item) => {
+        let price = item.price;
+        if (item.selectedSize === 'Lớn') price += 150000;
+        if (item.selectedSize === 'Đặc biệt') price += 300000;
+        if (item.selectedGifts) {
+            if (item.selectedGifts.includes('Gấu bông Teddy')) price += 150000;
+            if (item.selectedGifts.includes('Hộp Socola Ferrero')) price += 250000;
+            if (item.selectedGifts.includes('Nến thơm tinh dầu')) price += 180000;
+        }
+        return price;
+    };
+
     return (
         <div className="bg-white border border-[#F1F1F1] rounded-2xl p-6 shadow-sm sticky top-24">
             <h2 className="font-serif text-lg text-gray-800 mb-6">Tóm tắt đơn hàng</h2>
             
             {/* Products List (compact) */}
             <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                {cart.map(item => (
-                    <div key={`${item.id}-${item.selectedSize}`} className="flex items-center gap-3">
-                        <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="w-12 h-12 rounded-lg object-cover border border-gray-100"
-                        />
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-800 line-clamp-1">{item.name}</p>
-                            <p className="text-xs text-gray-500">SL: {item.quantity}</p>
+                {cart.map(item => {
+                    const itemTotalPrice = calculateItemPrice(item) * item.quantity;
+                    return (
+                        <div key={item.variantId} className="flex items-center gap-3">
+                            <img 
+                                src={item.image} 
+                                alt={item.name} 
+                                className="w-12 h-12 rounded-lg object-cover border border-gray-100"
+                            />
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-800 line-clamp-1">{item.name}</p>
+                                <div className="flex flex-wrap gap-1 mt-0.5">
+                                    <span className="text-[9px] text-gray-400">Size: {item.selectedSize || 'Tiêu chuẩn'}</span>
+                                    {item.selectedGifts && item.selectedGifts.map(g => (
+                                        <span key={g} className="text-[9px] text-[#FFB6C1]">+ {g}</span>
+                                    ))}
+                                </div>
+                                <p className="text-[10px] text-gray-500">SL: {item.quantity}</p>
+                            </div>
+                            <span className="text-sm font-medium text-gray-800">
+                                {formatPrice(itemTotalPrice)}
+                            </span>
                         </div>
-                        <span className="text-sm font-medium text-gray-800">
-                            {formatPrice(item.price * item.quantity)}
-                        </span>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Calculations */}

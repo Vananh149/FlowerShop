@@ -40,6 +40,14 @@ const productSchema = new mongoose.Schema({
         type: Number,
         default: 10
     },
+    occasion: {
+        type: String,
+        default: ''
+    },
+    isPopular: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

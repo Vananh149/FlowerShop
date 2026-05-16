@@ -15,7 +15,7 @@ export default function Toast({ message, onClose }) {
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
                 <span className="text-sm font-medium text-gray-800">{message}</span>
             </div>
-            <style jsx>{`
+            <style>{`
                 @keyframes slideIn {
                     from { transform: translateX(100%); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }

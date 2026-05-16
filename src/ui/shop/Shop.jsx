@@ -4,22 +4,40 @@ import Sidebar from './Sidebar';
 import ProductCard from '../shared/ProductCard';
 import Pagination from '../shared/Pagination';
 import ChatButton from '../shared/ChatButton';
-import { products as initialProducts } from '../../data/products';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 
 export default function Shop() {
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get('search') || '';
 
+    const [allProducts, setAllProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState({
         collection: 'Tất cả các loài hoa',
         types: [],
+        occasions: [],
         maxPrice: 3000000,
         color: null
     });
 
     const [sortOption, setSortOption] = useState('popular');
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Fetch sản phẩm từ MongoDB
+    React.useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/products');
+                const data = await response.json();
+                setAllProducts(data);
+            } catch (error) {
+                console.error("Lỗi khi tải sản phẩm:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     // Reset page to 1 when filters or search query change
     React.useEffect(() => {
@@ -31,14 +49,16 @@ export default function Shop() {
 
     // Filter Logic
     const filteredProducts = useMemo(() => {
-        return initialProducts.filter(p => {
+        return allProducts.filter(p => {
             // Search Query Filter
             if (searchQuery) {
                 const searchLower = searchQuery.toLowerCase().trim();
                 const matchName = p.name.toLowerCase().includes(searchLower);
                 const matchCategory = p.category?.toLowerCase().includes(searchLower);
                 const matchTag = p.tag?.toLowerCase().includes(searchLower);
-                if (!matchName && !matchCategory && !matchTag) return false;
+                const matchType = p.type?.toLowerCase().includes(searchLower); // Thêm tìm kiếm theo loại hoa
+                
+                if (!matchName && !matchCategory && !matchTag && !matchType) return false;
             }
 
             // Collection Filter
@@ -54,12 +74,18 @@ export default function Shop() {
             // Price Filter
             if (p.price > filters.maxPrice) return false;
 
-            // Color Filter (Fake - data lacks color, you can add color fields later)
-            // if (filters.color && p.color !== filters.color) return false;
+            // Occasions Filter
+            if (filters.occasions && filters.occasions.length > 0) {
+                const pOccasion = (p.occasion || '').toString().toLowerCase().trim();
+                const hasMatch = filters.occasions.some(o => 
+                    o.toString().toLowerCase().trim() === pOccasion
+                );
+                if (!hasMatch) return false;
+            }
 
             return true;
         });
-    }, [filters, searchQuery]);
+    }, [filters, searchQuery, allProducts]);
 
     // Sort Logic
     const sortedProducts = useMemo(() => {
@@ -85,6 +111,15 @@ export default function Shop() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] bg-gray-50/50">
+                <Loader2 className="w-12 h-12 animate-spin text-[#FFB6C1] mb-4" />
+                <p className="text-gray-500 font-serif text-lg">Đang mở cửa hàng...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-gray-50/50 min-h-screen py-16">
@@ -132,8 +167,8 @@ export default function Shop() {
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
                                 {paginatedProducts.map((p) => (
                                     <ProductCard
-                                        key={p.id}
-                                        id={p.id}
+                                        key={p._id}
+                                        id={p._id}
                                         image={p.image}
                                         name={p.name}
                                         price={p.price}
@@ -147,7 +182,7 @@ export default function Shop() {
                                 <p className="text-gray-500 mb-4">Không tìm thấy sản phẩm nào phù hợp với bộ lọc hoặc tìm kiếm.</p>
                                 <button
                                     onClick={() => {
-                                        setFilters({ collection: 'Tất cả các loài hoa', types: [], maxPrice: 3000000, color: null });
+                                        setFilters({ collection: 'Tất cả các loài hoa', types: [], occasions: [], maxPrice: 3000000, color: null });
                                         setSearchParams({});
                                     }}
                                     className="px-6 py-2 bg-flore-accent text-white rounded-full hover:bg-opacity-90 transition-colors text-sm font-medium"

@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import InputField from '../shared/InputField';
 import SocialButton from '../shared/SocialButton';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -32,21 +33,24 @@ export default function LoginPage() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validate()) {
             setIsLoading(true);
-            // Simulate API call
-            setTimeout(() => {
-                console.log('Login Form Submitted:', { email, password, rememberMe });
-                login({ 
-                    name: email.split('@')[0], // Tên giả lập từ email
-                    email: email,
-                    avatar: "" // Có thể bỏ trống để dùng chữ cái đầu
+            const result = await login(email, password);
+            setIsLoading(false);
+
+            if (result.success) {
+                toast.success('Chào mừng bạn quay trở lại!', {
+                    duration: 3000,
+                    position: 'top-center',
+                    style: { background: '#4CAF50', color: '#fff' }
                 });
-                setIsLoading(false);
                 navigate('/');
-            }, 1500);
+            } else {
+                setErrors({ ...errors, auth: result.message });
+                toast.error(result.message || 'Đăng nhập thất bại');
+            }
         }
     };
 
@@ -101,6 +105,7 @@ export default function LoginPage() {
                 <form onSubmit={handleSubmit}>
                     <InputField
                         label="Email"
+                        name="email"
                         icon={Mail}
                         type="email"
                         placeholder="yourname@email.com"
@@ -111,6 +116,7 @@ export default function LoginPage() {
 
                     <InputField
                         label="Mật khẩu"
+                        name="password"
                         icon={Lock}
                         type="password"
                         placeholder="••••••••"
@@ -181,7 +187,7 @@ export default function LoginPage() {
             </div>
             
             {/* Custom Animation Keyframes via Tailwind Arbitrary Values */}
-            <style jsx>{`
+            <style>{`
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(20px); }
                     to { opacity: 1; transform: translateY(0); }

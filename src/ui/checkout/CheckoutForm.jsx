@@ -10,7 +10,11 @@ export default function CheckoutForm({
         fullName: '',
         address: '',
         phone: '',
-        email: ''
+        email: '',
+        deliveryDate: '',
+        deliveryTime: '08:00 - 10:00',
+        cardType: 'Sinh nhật',
+        message: ''
     });
     
     const [errors, setErrors] = useState({});
@@ -30,6 +34,7 @@ export default function CheckoutForm({
         if (!formData.address.trim()) newErrors.address = 'Vui lòng nhập địa chỉ';
         if (!formData.phone.trim() || !/^\d{10,11}$/.test(formData.phone)) newErrors.phone = 'Số điện thoại không hợp lệ';
         if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email không hợp lệ';
+        if (!formData.deliveryDate) newErrors.deliveryDate = 'Vui lòng chọn ngày giao hàng';
         
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -100,6 +105,79 @@ export default function CheckoutForm({
                 </div>
             </div>
 
+            {/* Khối 3: Thời gian giao hàng */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F1F1F1]">
+                <h2 className="flex items-center gap-3 font-semibold text-gray-800 mb-6">
+                    <span className="bg-[#FFB6C1] text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">3</span>
+                    Thời gian giao hàng mong muốn
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Ngày giao</label>
+                        <input 
+                            type="date" 
+                            name="deliveryDate"
+                            min={new Date().toISOString().split('T')[0]}
+                            value={formData.deliveryDate}
+                            onChange={handleChange}
+                            className={`w-full border ${errors.deliveryDate ? 'border-red-400' : 'border-gray-200'} rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-pink-300 transition-shadow`}
+                        />
+                        {errors.deliveryDate && <p className="text-red-500 text-xs mt-1">{errors.deliveryDate}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Khung giờ</label>
+                        <select 
+                            name="deliveryTime"
+                            value={formData.deliveryTime}
+                            onChange={handleChange}
+                            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-pink-300 transition-shadow bg-white"
+                        >
+                            <option>08:00 - 10:00</option>
+                            <option>10:00 - 12:00</option>
+                            <option>13:00 - 15:00</option>
+                            <option>15:00 - 17:00</option>
+                            <option>18:00 - 20:00</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Khối 4: Thiệp & Lời nhắn */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F1F1F1]">
+                <h2 className="flex items-center gap-3 font-semibold text-gray-800 mb-6">
+                    <span className="bg-[#FFB6C1] text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">4</span>
+                    Thiệp chúc mừng & Lời nhắn
+                </h2>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Loại thiệp</label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {['Sinh nhật', 'Khai trương', 'Valentine', 'Cảm ơn', 'Khác'].map(type => (
+                                <button
+                                    key={type}
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, cardType: type }))}
+                                    className={`px-3 py-2 text-xs rounded-lg border transition-all ${formData.cardType === type ? 'bg-pink-50 border-pink-200 text-pink-600 font-medium' : 'border-gray-100 text-gray-500 hover:border-pink-100'}`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Lời nhắn trên thiệp</label>
+                        <textarea 
+                            name="message"
+                            value={formData.message}
+                            onChange={handleChange}
+                            placeholder="Nhập lời nhắn bạn muốn gửi đến người nhận..." 
+                            rows="3"
+                            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-pink-300 transition-shadow resize-none"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
             {/* Khối 2: Phương thức giao hàng */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F1F1F1]">
                 <h2 className="flex items-center gap-3 font-semibold text-gray-800 mb-6">
@@ -130,10 +208,10 @@ export default function CheckoutForm({
                 </div>
             </div>
 
-            {/* Khối 3: Phương thức thanh toán */}
+            {/* Khối 5: Phương thức thanh toán */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F1F1F1]">
                 <h2 className="flex items-center gap-3 font-semibold text-gray-800 mb-6">
-                    <span className="bg-[#FFB6C1] text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">3</span>
+                    <span className="bg-[#FFB6C1] text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">5</span>
                     Phương thức thanh toán
                 </h2>
                 <div className="flex flex-col gap-4">

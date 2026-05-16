@@ -2,18 +2,11 @@ import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function CartSummary({ cartTotal, cartCount }) {
-    const navigate = useNavigate();
+export default function CartSummary({ cartTotal, cartCount, isSelectionEmpty, onCheckout }) {
     const shippingFee = 0; // Miễn phí giao hàng như đã thỏa thuận
 
     const formatPrice = (price) => {
         return price.toLocaleString('vi-VN') + ' VND';
-    };
-
-    const handleCheckout = () => {
-        if (cartCount > 0) {
-            navigate('/checkout');
-        }
     };
 
     return (
@@ -23,7 +16,7 @@ export default function CartSummary({ cartTotal, cartCount }) {
                 
                 <div className="space-y-4">
                     <div className="flex justify-between text-sm text-gray-500">
-                        <span>Tạm tính ({cartCount} sản phẩm)</span>
+                        <span>Tạm tính ({cartCount} sản phẩm đã chọn)</span>
                         <span>{formatPrice(cartTotal)}</span>
                     </div>
                 </div>
@@ -36,8 +29,13 @@ export default function CartSummary({ cartTotal, cartCount }) {
                 </div>
 
                 <button 
-                    onClick={handleCheckout}
-                    className="mt-6 w-full bg-[#FFB6C1] text-white py-3 rounded-full hover:scale-105 transition-transform duration-300 flex items-center justify-center gap-2 font-medium shadow-sm"
+                    onClick={onCheckout}
+                    disabled={isSelectionEmpty}
+                    className={`mt-6 w-full py-3 rounded-full flex items-center justify-center gap-2 font-medium shadow-sm transition-all duration-300 ${
+                        isSelectionEmpty 
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                        : 'bg-[#FFB6C1] text-white hover:scale-105'
+                    }`}
                 >
                     THANH TOÁN 
                     <ArrowRight className="w-4 h-4" />

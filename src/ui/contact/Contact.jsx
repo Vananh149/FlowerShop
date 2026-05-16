@@ -24,33 +24,6 @@ export default function Contact() {
                         Chúng tôi luôn lắng nghe và sẵn sàng hỗ trợ. Hãy để lại lời nhắn, Floré sẽ liên hệ với bạn trong thời gian sớm nhất.
                     </p>
 
-                    {/* Quick Input Bar */}
-                    <form 
-                        className="max-w-lg mx-auto flex items-center bg-white rounded-full shadow-sm border border-gray-100 p-1.5 focus-within:ring-2 focus-within:ring-pink-200 transition-all" 
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            const inputVal = e.target.elements[0].value;
-                            if (inputVal.trim()) {
-                                toast.success('Cảm ơn bạn đã liên hệ! Floré sẽ phản hồi trong thời gian sớm nhất.', {
-                                    duration: 4000,
-                                    position: 'top-center',
-                                    style: { background: '#4CAF50', color: '#fff', borderRadius: '10px' }
-                                });
-                                e.target.reset();
-                            }
-                        }}
-                    >
-                        <input 
-                            type="text" 
-                            placeholder="Nhập email hoặc câu hỏi ngắn..." 
-                            required
-                            className="flex-1 bg-transparent px-5 py-3 text-sm text-[#333333] placeholder-gray-400 focus:outline-none"
-                        />
-                        <button type="submit" className="bg-[#FFB6C1] hover:bg-[#734A4A] text-white px-6 py-3 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
-                            <span>GỬI</span>
-                            <Send className="w-4 h-4" />
-                        </button>
-                    </form>
                 </div>
             </div>
 
@@ -76,7 +49,7 @@ export default function Contact() {
             </div>
 
             {/* Custom Animations */}
-            <style jsx>{`
+            <style>{`
                 @keyframes fadeIn {
                     from { opacity: 0; }
                     to { opacity: 1; }

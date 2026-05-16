@@ -1,13 +1,26 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../shared/ProductCard";
 import Newsletter from "./Newsletter";
 import PromoMarquee from "./PromoMarquee";
-
-import { products as allProducts } from "../../data/products";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
-    const products = allProducts.slice(0, 4);
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/api/products')
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data.slice(0, 4));
+                setIsLoading(false);
+            })
+            .catch(err => {
+                console.error("Lỗi khi tải hoa trang chủ:", err);
+                setIsLoading(false);
+            });
+    }, []);
 
     return (
         <div className="bg-white overflow-x-hidden text-[#4A4A4A]">
@@ -50,17 +63,23 @@ export default function Home() {
                         </p>
                     </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {products.map((p) => (
-                            <ProductCard 
-                                key={p.id} 
-                                id={p.id}
-                                image={p.image} 
-                                name={p.name} 
-                                price={p.price} 
-                            />
-                        ))}
-                    </div>
+                    {isLoading ? (
+                        <div className="col-span-full flex justify-center py-20">
+                            <Loader2 className="w-10 h-10 animate-spin text-[#FFB6C1]" />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {products.map((p) => (
+                                <ProductCard 
+                                    key={p._id} 
+                                    id={p._id}
+                                    image={p.image} 
+                                    name={p.name} 
+                                    price={p.price} 
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 
