@@ -10,13 +10,6 @@ export default function CartPage() {
     const [selectedIds, setSelectedIds] = useState([]);
     const navigate = useNavigate();
 
-    // Tự động chọn tất cả khi vào giỏ hàng lần đầu
-    useEffect(() => {
-        if (cart.length > 0 && selectedIds.length === 0) {
-            setSelectedIds(cart.map(item => item.variantId));
-        }
-    }, [cart]);
-
     const toggleSelect = (variantId) => {
         setSelectedIds(prev => 
             prev.includes(variantId) 

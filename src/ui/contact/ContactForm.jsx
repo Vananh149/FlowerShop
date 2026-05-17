@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ContactForm() {
+    const { user } = useAuth();
+    
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -10,6 +13,17 @@ export default function ContactForm() {
     });
 
     const [loading, setLoading] = useState(false);
+
+    // Tự động điền thông tin nếu khách hàng đã đăng nhập
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.name || '',
+                email: user.email || ''
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,7 +50,13 @@ export default function ContactForm() {
                     position: 'top-center',
                     style: { background: '#4CAF50', color: '#fff', borderRadius: '10px' },
                 });
-                setFormData({ name: '', email: '', subject: '', message: '' });
+                // Nếu đã đăng nhập thì giữ nguyên thông tin cá nhân, chỉ reset subject và message
+                setFormData(prev => ({
+                    name: user ? user.name : '',
+                    email: user ? user.email : '',
+                    subject: '',
+                    message: ''
+                }));
             } else {
                 toast.error(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
             }
@@ -62,7 +82,12 @@ export default function ContactForm() {
                             onChange={handleChange}
                             placeholder="Họ và tên *" 
                             required
-                            className="w-full bg-gray-50 rounded-lg px-4 py-3.5 text-sm text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FFB6C1] focus:bg-white transition-all border border-transparent focus:border-pink-200"
+                            readOnly={!!user}
+                            className={`w-full rounded-lg px-4 py-3.5 text-sm text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FFB6C1] transition-all border border-transparent focus:border-pink-200 ${
+                                user 
+                                    ? 'bg-gray-100 border-gray-200/60 cursor-not-allowed text-gray-500' 
+                                    : 'bg-gray-50 focus:bg-white'
+                            }`}
                         />
                     </div>
                     <div>
@@ -73,7 +98,12 @@ export default function ContactForm() {
                             onChange={handleChange}
                             placeholder="Email của bạn *" 
                             required
-                            className="w-full bg-gray-50 rounded-lg px-4 py-3.5 text-sm text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FFB6C1] focus:bg-white transition-all border border-transparent focus:border-pink-200"
+                            readOnly={!!user}
+                            className={`w-full rounded-lg px-4 py-3.5 text-sm text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FFB6C1] transition-all border border-transparent focus:border-pink-200 ${
+                                user 
+                                    ? 'bg-gray-100 border-gray-200/60 cursor-not-allowed text-gray-500' 
+                                    : 'bg-gray-50 focus:bg-white'
+                            }`}
                         />
                     </div>
                 </div>

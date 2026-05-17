@@ -23,11 +23,24 @@ export default function ProductInfo({ product, onAddToCart }) {
         );
     };
 
+    // Tính giá thực tế dựa trên Kích thước & Quà tặng đã chọn
+    const calculateCurrentPrice = () => {
+        let total = product.price;
+        if (selectedSize === 'Lớn') total += 150000;
+        if (selectedSize === 'Đặc biệt') total += 300000;
+        
+        selectedGifts.forEach(giftName => {
+            const gift = gifts.find(g => g.name === giftName);
+            if (gift) total += gift.price;
+        });
+        return total;
+    };
+
     return (
         <div className="flex flex-col h-full">
             {/* Tiêu đề & Giá */}
             <h1 className="text-3xl font-serif text-gray-800">{product.name}</h1>
-            <p className="text-xl font-bold text-[#FFB6C1] mt-2">{product.price.toLocaleString('vi-VN')}đ</p>
+            <p className="text-xl font-bold text-[#FFB6C1] mt-2">{calculateCurrentPrice().toLocaleString('vi-VN')}đ</p>
             
             {/* Mô tả */}
             <p className="text-sm text-gray-500 mt-4 leading-relaxed">

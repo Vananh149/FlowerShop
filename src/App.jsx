@@ -27,6 +27,8 @@ import AdminOrders from "./ui/admin/AdminOrders";
 import AdminProducts from "./ui/admin/AdminProducts";
 import AdminReviews from "./ui/admin/AdminReviews";
 import AdminProfile from "./ui/admin/AdminProfile";
+import AdminCustomers from "./ui/admin/AdminCustomers";
+import AdminContacts from "./ui/admin/AdminContacts";
 import ScrollToTop from "./ui/shared/ScrollToTop";
 
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +52,8 @@ const AppContent = () => {
                     <Route path="products" element={<AdminProducts />} />
                     <Route path="reviews" element={<AdminReviews />} />
                     <Route path="profile" element={<AdminProfile />} />
+                    <Route path="customers" element={<AdminCustomers />} />
+                    <Route path="contacts" element={<AdminContacts />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/admin" replace />} />
             </Routes>

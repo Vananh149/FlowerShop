@@ -8,7 +8,9 @@ import {
     LogOut, 
     ChevronRight,
     User,
-    ArrowLeft
+    ArrowLeft,
+    Users,
+    MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -16,8 +18,9 @@ export default function AdminLayout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [pendingCount, setPendingCount] = React.useState(0);
+    const [unreadContacts, setUnreadContacts] = React.useState(0);
 
-    // Lấy số lượng đơn hàng đang chờ xử lý
+    // Lấy số lượng đơn hàng đang chờ xử lý và tin nhắn liên hệ chưa phản hồi
     React.useEffect(() => {
         const fetchPendingCount = async () => {
             try {
@@ -29,9 +32,28 @@ export default function AdminLayout() {
                 console.error("Lỗi khi đếm đơn hàng:", error);
             }
         };
+        const fetchContactsCount = async () => {
+            try {
+                const response = await fetch('/api/contacts');
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    const count = (data.data || []).filter(c => !c.isReplied).length;
+                    setUnreadContacts(count);
+                }
+            } catch (error) {
+                console.error("Lỗi khi đếm tin nhắn liên hệ:", error);
+            }
+        };
+
         fetchPendingCount();
+        fetchContactsCount();
+
         // Cập nhật lại mỗi 30 giây
-        const interval = setInterval(fetchPendingCount, 30000);
+        const interval = setInterval(() => {
+            fetchPendingCount();
+            fetchContactsCount();
+        }, 30000);
+        
         return () => clearInterval(interval);
     }, []);
 
@@ -39,6 +61,8 @@ export default function AdminLayout() {
         { name: 'Tổng quan', path: '/admin', icon: <LayoutDashboard size={20} /> },
         { name: 'Quản lý đơn hàng', path: '/admin/orders', icon: <ClipboardList size={20} />, badge: pendingCount },
         { name: 'Quản lý sản phẩm', path: '/admin/products', icon: <Flower2 size={20} /> },
+        { name: 'Quản lý khách hàng', path: '/admin/customers', icon: <Users size={20} /> },
+        { name: 'Liên hệ khách hàng', path: '/admin/contacts', icon: <MessageSquare size={20} />, badge: unreadContacts },
         { name: 'Quản lý đánh giá', path: '/admin/reviews', icon: <Star size={20} /> },
         { name: 'Thông tin cá nhân', path: '/admin/profile', icon: <User size={20} /> },
     ];

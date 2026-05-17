@@ -16,6 +16,27 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Vui lòng nhập mật khẩu'],
     },
+    phone: {
+      type: String,
+      default: '',
+    },
+    dob: {
+      type: String,
+      default: '',
+    },
+    gender: {
+      type: String,
+      default: '',
+    },
+    addresses: [
+      {
+        name: { type: String, default: '' },
+        phone: { type: String, default: '' },
+        email: { type: String, default: '' },
+        addressLine: { type: String, default: '' },
+        isDefault: { type: Boolean, default: false }
+      }
+    ],
     role: {
       type: String,
       enum: ['user', 'admin'],
@@ -38,9 +59,9 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Middleware tự động mã hóa mật khẩu trước khi lưu vào database
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

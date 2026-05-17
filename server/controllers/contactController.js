@@ -31,3 +31,61 @@ export const createContact = async (req, res) => {
     });
   }
 };
+
+// @desc    Lấy tất cả tin nhắn liên hệ
+// @route   GET /api/contacts
+// @access  Private/Admin
+export const getContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find({}).sort({ createdAt: -1 });
+    res.json({ success: true, data: contacts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Xóa tin nhắn liên hệ
+// @route   DELETE /api/contacts/:id
+// @access  Private/Admin
+export const deleteContact = async (req, res) => {
+  try {
+    const contact = await Contact.findById(req.params.id);
+    if (contact) {
+      await Contact.findByIdAndDelete(req.params.id);
+      res.json({ success: true, message: 'Đã xóa tin nhắn liên hệ thành công' });
+    } else {
+      res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn liên hệ' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Phản hồi tin nhắn liên hệ
+// @route   PUT /api/contacts/reply/:id
+// @access  Private/Admin
+export const replyContact = async (req, res) => {
+  try {
+    const { replyMessage } = req.body;
+    if (!replyMessage || !replyMessage.trim()) {
+      return res.status(400).json({ success: false, message: 'Nội dung phản hồi không được để trống' });
+    }
+
+    const contact = await Contact.findById(req.params.id);
+    if (contact) {
+      contact.isReplied = true;
+      contact.replyMessage = replyMessage;
+      
+      const updatedContact = await contact.save();
+      res.json({
+        success: true,
+        message: 'Đã lưu và gửi phản hồi thành công!',
+        data: updatedContact
+      });
+    } else {
+      res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn liên hệ' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
