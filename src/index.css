@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-flore-pink: #FDE2E4;
+  --color-flore-accent: #E5989B;
+  --color-flore-dark: #6D6875;
+  --color-flore-beige: #FAF3F0;
+  
+  /* Additional colors for Shop */
+  --color-soft-pink: #FDE2E4;
+  --color-accent: #E5989B;
+  --color-sidebar-active: #E5989B;
+  
+  /* Additional colors for Login */
+  --color-soft-pink-login: #FFB6C1;
+  
+  /* Additional colors for About Page */
+  --color-flore-pink: #F3D1D1;
+  --color-flore-bg: #FFF5F5;
+  --color-flore-dark: #111111;
+  --color-flore-gray: #777777;
+}
+
+/* Font */
+body {
+  font-family: 'Inter', sans-serif;
+  color: #4A4A4A;
+}
+
+/* Heading dùng font serif */
+h1,
+h2,
+h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
