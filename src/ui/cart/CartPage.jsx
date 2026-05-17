@@ -1,12 +1,54 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingBag } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingBag, Check } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
 
 export default function CartPage() {
-    const { cart, updateQuantity, removeFromCart, cartTotal, cartCount } = useCart();
+    const { cart, updateQuantity, removeFromCart } = useCart();
+    const [selectedIds, setSelectedIds] = useState([]);
+    const navigate = useNavigate();
+
+    const toggleSelect = (variantId) => {
+        setSelectedIds(prev => 
+            prev.includes(variantId) 
+                ? prev.filter(id => id !== variantId) 
+                : [...prev, variantId]
+        );
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.length === cart.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(cart.map(item => item.variantId));
+        }
+    };
+
+    const calculateItemPrice = (item) => {
+        let price = item.price;
+        if (item.selectedSize === 'Lớn') price += 150000;
+        if (item.selectedSize === 'Đặc biệt') price += 300000;
+        if (item.selectedGifts) {
+            if (item.selectedGifts.includes('Gấu bông Teddy')) price += 150000;
+            if (item.selectedGifts.includes('Hộp Socola Ferrero')) price += 250000;
+            if (item.selectedGifts.includes('Nến thơm tinh dầu')) price += 180000;
+        }
+        return price;
+    };
+
+    const selectedItems = cart.filter(item => selectedIds.includes(item.variantId));
+    const selectedTotal = selectedItems.reduce((total, item) => total + (calculateItemPrice(item) * item.quantity), 0);
+    const selectedCount = selectedItems.reduce((count, item) => count + item.quantity, 0);
+
+    const handleCheckout = () => {
+        if (selectedItems.length === 0) {
+            return;
+        }
+        // Chuyển sang trang checkout với danh sách món đã chọn
+        navigate('/checkout', { state: { selectedItems, selectedTotal } });
+    };
 
     return (
         <div className="bg-[#FDFCFB] min-h-screen py-10">
@@ -34,10 +76,27 @@ export default function CartPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         {/* Cart Items List */}
                         <div className="lg:col-span-2 space-y-4">
+                            {/* Select All Header */}
+                            <div className="flex items-center gap-4 bg-white border border-[#F1F1F1] rounded-2xl p-4 shadow-sm mb-4">
+                                <button 
+                                    onClick={toggleSelectAll}
+                                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
+                                        selectedIds.length === cart.length 
+                                        ? 'bg-[#FFB6C1] border-[#FFB6C1] text-white' 
+                                        : 'bg-white border-gray-200'
+                                    }`}
+                                >
+                                    {selectedIds.length === cart.length && <Check size={14} strokeWidth={4} />}
+                                </button>
+                                <span className="text-sm font-medium text-gray-700">Chọn tất cả ({cart.length} sản phẩm)</span>
+                            </div>
+
                             {cart.map(item => (
                                 <CartItem 
-                                    key={`${item.id}-${item.selectedSize}`} 
+                                    key={item.variantId} 
                                     item={item} 
+                                    isSelected={selectedIds.includes(item.variantId)}
+                                    onToggleSelect={() => toggleSelect(item.variantId)}
                                     onUpdateQuantity={updateQuantity} 
                                     onRemove={removeFromCart} 
                                 />
@@ -46,7 +105,12 @@ export default function CartPage() {
 
                         {/* Order Summary */}
                         <div className="lg:col-span-1">
-                            <CartSummary cartTotal={cartTotal} cartCount={cartCount} />
+                            <CartSummary 
+                                cartTotal={selectedTotal} 
+                                cartCount={selectedCount} 
+                                isSelectionEmpty={selectedItems.length === 0}
+                                onCheckout={handleCheckout}
+                            />
                         </div>
                     </div>
                 )}

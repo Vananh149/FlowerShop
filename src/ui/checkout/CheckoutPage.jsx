@@ -1,66 +1,108 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import CheckoutForm from './CheckoutForm';
 import CheckoutSummary from './CheckoutSummary';
 import Toast from '../shared/Toast';
 
 export default function CheckoutPage() {
-    const { cart, cartTotal, clearCart } = useCart();
+    const { cart, cartTotal, removeMultipleFromCart } = useCart();
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Lấy dữ liệu sản phẩm đã chọn từ state của Link/Navigate (từ CartPage truyền sang)
+    // Nếu không có (ví dụ vào thẳng link), ta dùng toàn bộ giỏ hàng làm mặc định
+    const checkoutItems = location.state?.selectedItems || cart;
+    const checkoutTotal = location.state?.selectedTotal || cartTotal;
 
     const [shippingMethod, setShippingMethod] = useState('standard');
     const [paymentMethod, setPaymentMethod] = useState('cod');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showToast, setShowToast] = useState(false);
 
-    // If cart is empty, redirect to cart or shop
+    // If cart is empty and no state passed, redirect back
     useEffect(() => {
-        if (cart.length === 0 && !isSubmitting && !showToast) {
+        if (checkoutItems.length === 0 && !isSubmitting && !showToast) {
             navigate('/cart');
         }
-    }, [cart, navigate, isSubmitting, showToast]);
+    }, [checkoutItems, navigate, isSubmitting, showToast]);
 
     const shippingFee = shippingMethod === 'express' ? 50000 : 15000;
-    const finalTotal = cartTotal + shippingFee;
+    const finalTotal = checkoutTotal + shippingFee;
 
-    const handlePlaceOrder = (formData) => {
-        setIsSubmitting(true);
-        // Giả lập API call
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setShowToast(true);
-            
-            // Generate mock order ID
-            const orderId = '#' + Math.floor(10000000 + Math.random() * 90000000);
-            const date = new Date().toISOString();
-            
-            const orderData = {
-                id: orderId, // use 'id' instead of 'orderId' to match MOCK_ORDERS format
-                date: new Date().toLocaleString('vi-VN'), // format date nicely
-                items: [...cart], // MOCK_ORDERS uses 'items' instead of 'cart'
-                formData,
-                name: formData.fullName, // match MOCK_ORDERS
-                address: formData.address,
-                phone: formData.phone,
-                paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Thẻ tín dụng', // human readable
-                total: finalTotal, // MOCK_ORDERS uses 'total'
-                status: 'Đang xử lý' // default status
-            };
-
-            // Save to localStorage
-            const existingOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
-            localStorage.setItem('myOrders', JSON.stringify([orderData, ...existingOrders]));
-
-            clearCart();
-            // Redirect sau 2 giây
-            setTimeout(() => {
-                navigate('/success', { state: { orderData } });
-            }, 2000);
-        }, 1500);
+    const calculateItemPrice = (item) => {
+        let price = item.price;
+        if (item.selectedSize === 'Lớn') price += 150000;
+        if (item.selectedSize === 'Đặc biệt') price += 300000;
+        if (item.selectedGifts) {
+            if (item.selectedGifts.includes('Gấu bông Teddy')) price += 150000;
+            if (item.selectedGifts.includes('Hộp Socola Ferrero')) price += 250000;
+            if (item.selectedGifts.includes('Nến thơm tinh dầu')) price += 180000;
+        }
+        return price;
     };
 
-    if (cart.length === 0 && !showToast) {
+    const handlePlaceOrder = async (formData) => {
+        if (!user) {
+            alert("Vui lòng đăng nhập để đặt hàng!");
+            navigate('/login');
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const orderData = {
+                userId: user._id || user.id,
+                name: formData.fullName,
+                items: checkoutItems.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    image: item.image,
+                    price: calculateItemPrice(item),
+                    quantity: item.quantity,
+                    selectedSize: item.selectedSize || 'Tiêu chuẩn',
+                    selectedGifts: item.selectedGifts || []
+                })),
+                totalAmount: finalTotal,
+                shippingAddress: formData.address,
+                phone: formData.phone,
+                paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Thẻ tín dụng'
+            };
+
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setIsSubmitting(false);
+                setShowToast(true);
+                
+                // Chỉ xóa những món đã đặt ra khỏi giỏ hàng
+                const variantIdsToRemove = checkoutItems.map(item => item.variantId);
+                removeMultipleFromCart(variantIdsToRemove);
+                
+                // Redirect sau 2 giây
+                setTimeout(() => {
+                    navigate('/success', { state: { orderData: data } });
+                }, 2000);
+            } else {
+                alert(data.message || "Lỗi khi tạo đơn hàng");
+                setIsSubmitting(false);
+            }
+        } catch (error) {
+            console.error("Lỗi khi đặt hàng:", error);
+            alert("Không thể kết nối đến máy chủ");
+            setIsSubmitting(false);
+        }
+    };
+
+    if (checkoutItems.length === 0 && !showToast) {
         return null; // Redirecting
     }
 
@@ -85,8 +127,8 @@ export default function CheckoutPage() {
                     {/* Right Column: Summary */}
                     <div className="lg:col-span-1">
                         <CheckoutSummary 
-                            cart={cart}
-                            cartTotal={cartTotal}
+                            cart={checkoutItems}
+                            cartTotal={checkoutTotal}
                             shippingFee={shippingFee}
                             finalTotal={finalTotal}
                             isSubmitting={isSubmitting}

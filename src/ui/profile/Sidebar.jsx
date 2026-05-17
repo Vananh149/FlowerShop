@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { User, ShoppingBag, MapPin, Heart, LogOut } from 'lucide-react';
+import { User, ShoppingBag, MapPin, Heart, LogOut, MessageSquare } from 'lucide-react';
 
-export default function Sidebar({ activeTab, setActiveTab, handleLogout }) {
+export default function Sidebar({ activeTab, setActiveTab, handleLogout, hasNewReply }) {
     const { user } = useAuth();
     const navigate = useNavigate();
     const initial = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
@@ -12,6 +12,7 @@ export default function Sidebar({ activeTab, setActiveTab, handleLogout }) {
         { id: 'info', label: 'Thông tin cá nhân', icon: User },
         { id: 'orders', label: 'Đơn hàng của tôi', icon: ShoppingBag },
         { id: 'address', label: 'Địa chỉ', icon: MapPin },
+        { id: 'contacts', label: 'Hộp thư liên hệ', icon: MessageSquare },
         { id: 'wishlist', label: 'Yêu thích', icon: Heart },
     ];
 
@@ -29,7 +30,7 @@ export default function Sidebar({ activeTab, setActiveTab, handleLogout }) {
                 <p className="text-xs text-gray-400 text-center mt-1">Thành viên thân thiết</p>
             </div>
 
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2 text-left">
                 {menuItems.map(item => {
                     const Icon = item.icon;
                     const isActive = activeTab === item.id;
@@ -46,14 +47,17 @@ export default function Sidebar({ activeTab, setActiveTab, handleLogout }) {
                                     navigate('/profile', { state: { tab: item.id } });
                                 }
                             }}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 w-full text-left ${
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 w-full text-left relative ${
                                 activeTab === item.id 
                                     ? 'bg-[#FDECEC] text-[#8C5D5D] font-medium' 
                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                             }`}
                         >
                             <Icon className="w-5 h-5" />
-                            <span className="text-sm">{item.label}</span>
+                            <span className="text-sm flex-1">{item.label}</span>
+                            {item.id === 'contacts' && hasNewReply && (
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse absolute right-4"></span>
+                            )}
                         </button>
                     );
                 })}

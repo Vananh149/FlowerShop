@@ -8,9 +8,9 @@ export default function CTASection() {
 
     const handleWriteReview = () => {
         if (user) {
-            navigate('/write-review');
+            navigate('/orders?filter=Hoàn tất');
         } else {
-            navigate('/login', { state: { returnUrl: '/write-review' } });
+            navigate('/login', { state: { returnUrl: '/orders?filter=Hoàn tất' } });
         }
     };
 

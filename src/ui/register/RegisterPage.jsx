@@ -3,9 +3,12 @@ import { User, Mail, Lock, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import InputField from '../shared/InputField';
 import SocialButton from '../shared/SocialButton';
+import { useAuth } from '../../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const { register } = useAuth();
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -59,7 +62,7 @@ export default function RegisterPage() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Validate all fields on submit
@@ -71,17 +74,24 @@ export default function RegisterPage() {
         
         setErrors(newErrors);
 
-        // Check if there are any error messages that are not empty strings
         const hasErrors = Object.values(newErrors).some(err => err !== '');
         
         if (!hasErrors) {
             setIsSubmitting(true);
-            // Simulate API call
-            setTimeout(() => {
-                console.log('Register Form Submitted:', form);
-                setIsSubmitting(false);
-                // navigate('/login'); // Optional redirect after success
-            }, 1500);
+            const result = await register(form.name, form.email, form.password);
+            setIsSubmitting(false);
+
+            if (result.success) {
+                toast.success('Đăng ký thành công! Vui lòng đăng nhập.', {
+                    duration: 3000,
+                    position: 'top-center',
+                    style: { background: '#4CAF50', color: '#fff' }
+                });
+                navigate('/login');
+            } else {
+                toast.error(result.message || 'Đăng ký thất bại');
+                setErrors({ ...newErrors, api: result.message });
+            }
         }
     };
 
@@ -280,7 +290,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Custom Animation Keyframes */}
-            <style jsx>{`
+            <style>{`
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(20px); }
                     to { opacity: 1; transform: translateY(0); }

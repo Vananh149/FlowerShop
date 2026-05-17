@@ -19,12 +19,17 @@ export default function ReviewCard({ review }) {
         <div className="bg-white p-6 rounded-2xl border border-[#F1F1F1] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                    <div className={`w-11 h-11 rounded-full flex items-center justify-center font-serif text-lg font-bold text-gray-700 ${review.avatarBg}`}>
-                        {review.avatarLetter}
+                    <div 
+                        className="w-11 h-11 rounded-full flex items-center justify-center font-serif text-lg font-bold text-white shadow-sm"
+                        style={{ backgroundColor: review.avatarBg || '#8C5D5D' }}
+                    >
+                        {review.avatarLetter || review.name?.charAt(0) || 'K'}
                     </div>
                     <div>
                         <h4 className="font-semibold text-[#333333] text-sm">{review.name}</h4>
-                        <p className="text-xs text-[#777777] mt-0.5">{review.date}</p>
+                        <p className="text-xs text-[#777777] mt-0.5">
+                            {review.createdAt ? new Date(review.createdAt).toLocaleDateString('vi-VN') : 'Mới đây'}
+                        </p>
                     </div>
                 </div>
                 <div className="flex space-x-0.5">
@@ -36,7 +41,7 @@ export default function ReviewCard({ review }) {
                 {review.content}
             </p>
             
-            {review.hasImage && review.image && (
+            {review.image && (
                 <div className="mt-4 aspect-[4/3] overflow-hidden rounded-xl">
                     <img 
                         src={review.image} 

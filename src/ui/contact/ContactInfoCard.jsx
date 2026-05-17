@@ -11,7 +11,7 @@ export default function ContactInfoCard() {
                 <div>
                     <h4 className="font-serif text-[#333333] font-semibold mb-1">Cửa hàng chính</h4>
                     <p className="text-[#777777] text-sm leading-relaxed">
-                        12 Nguyễn Văn Bảo, P. Hạnh Thông, Thành phố Hồ Chí Minh
+                        12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, Thành phố Hồ Chí Minh
                     </p>
                 </div>
             </div>

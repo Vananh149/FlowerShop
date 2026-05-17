@@ -1,19 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../contexts/CartContext';
 
-export default function OrderCard({ order, showToast }) {
+export default function OrderCard({ order, showToast, isReviewed }) {
     const navigate = useNavigate();
     const { addToCart } = useCart();
 
     const getStatusBadge = (status) => {
         switch(status) {
-            case 'Đang xử lý':
-                return <span className="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
+            case 'Chờ xác nhận':
+                return <span className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
+            case 'Chờ lấy hàng':
+                return <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
             case 'Đang giao':
+                return <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
+            case 'Đã giao':
                 return <span className="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
-            case 'Hoàn tất':
-                return <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
             case 'Đã hủy':
                 return <span className="bg-red-100 text-red-500 px-2 py-1 rounded-full text-xs font-medium">{status}</span>;
             default:
@@ -65,6 +67,23 @@ export default function OrderCard({ order, showToast }) {
                     >
                         Xem chi tiết
                     </button>
+                    {order.status === 'Đã giao' && (
+                        isReviewed ? (
+                            <button 
+                                onClick={() => navigate('/reviews')}
+                                className="text-xs px-4 py-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors font-medium border border-gray-200"
+                            >
+                                Xem đánh giá
+                            </button>
+                        ) : (
+                            <button 
+                                onClick={() => navigate('/write-review', { state: { product: order.items[0], orderId: order.id } })}
+                                className="text-xs px-4 py-2 bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 transition-colors font-medium border border-pink-200"
+                            >
+                                Đánh giá
+                            </button>
+                        )
+                    )}
                     <button 
                         onClick={handleReorder}
                         className="text-xs px-4 py-2 bg-[#8C5D5D] text-white rounded-full hover:scale-105 transition-transform font-medium"
